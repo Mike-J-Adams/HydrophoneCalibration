@@ -46,7 +46,7 @@ def readWave(fname):
 
 if __name__=='__main__':
     
-    fproj = '/home/xuj/work/project/landerMooring/amar772Calibration/'
+    fproj = 'C:/Users/Adamsmi/Documents/PYTHON/GITHUB/HydrophoneCalibration/'
     
     st600Wav = fproj+'data/ch1/amar772.1.20220707T151736Z.wav'
     pistonWav = fproj+'data/ch1/AMAR772_Ch1-0003126207.wav'
