@@ -48,46 +48,40 @@ if __name__=='__main__':
     
     fproj = 'C:/Users/Adamsmi/Documents/PYTHON/GITHUB/HydrophoneCalibration/'
     
-    st600Wav = fproj+'data/ch1/amar772.1.20220707T151736Z.wav'
-    pistonWav = fproj+'data/ch1/AMAR772_Ch1-0003126207.wav'
-
-    # st600= wave.open(st600Wav,'r')
-    # piston= wave.open(pistonWav,'r')
-    
-    # print ( "Frame rate.",st600.getframerate())
-    # print ( "Frame rate.",piston.getframerate())
-    
-    # st600.close()
-    # piston.close()
-    
-    # st600fs, St600data = wavfile.read(st600Wav)   
-    St600data,st600fs = readWave(st600Wav)
+    #AMARWav = fproj+'data/ch1/amar772.1.20220707T151736Z.wav'
+    AMARWav = fproj+'data/AMAR/AMAR533.20230727T152213Z.wav'
+    pistonWav = fproj+'data/MicrophonePiston/20230725-145320(UTC)-Default setup-0000213064.wav'
+ 
+    AMARdata,AMARfs = readWave(AMARWav)
     pistondata,pistonfs = readWave(pistonWav)   
     
-    print('piston freq:',pistonfs)
+    print('piston Fs:',pistonfs)
     
-    t1 = np.arange(0,len(St600data))/st600fs
+    t1 = np.arange(0,len(AMARdata))/AMARfs
     t2 = np.arange(0,len(pistondata))/pistonfs
     
-    print(len(t1),len(St600data))
+    print(len(t1),len(AMARdata))
     print(len(t2),len(pistondata))
     
     
     fig,ax1=plt.subplots()
-    ax1.plot(t1,St600data,'r')
+    ax1.plot(t1,AMARdata,'r')
     ax1.plot(t2,pistondata)
     plt.show()
     plt.close()
     
     # exit(1)
     
+    pistonStart = 3
+    pistonStop = 13
+    
     plt.figure()
     
-    plt.plot(t2[1*pistonfs:16*pistonfs],pistondata[1*pistonfs:16*pistonfs])
+    plt.plot(t2[pistonStart*pistonfs:pistonStop*pistonfs],pistondata[pistonStart*pistonfs:pistonStop*pistonfs])
     plt.show()
     plt.close()
     
-    pistonWAV_int = pistondata[1*pistonfs:16*pistonfs]
+    pistonWAV_int = pistondata[pistonStart*pistonfs:pistonStop*pistonfs]
     pistonWAV_v = pistonWAV_int/2**23*10
     
     # plt.figure()
@@ -99,22 +93,18 @@ if __name__=='__main__':
     pistonRMS= np.sqrt(np.var(pistonWAV_v))
     print(pistonRMS)
     
-    
-    
-    
-    
-    # pistonWAV_pascal_dBAir= 20*np.log10(pistonRMS*1000/51.1*1e6/20)
+    pistonWAV_pascal_dBAir= 20*np.log10(pistonRMS*1000/51.1*1e6/20)
 
 # Microphone 4191-L-001, 12.5 mv/Pa 
 
-    pistonWAV_pascal_dBAir= 20*np.log10(pistonRMS*1000/12.5*1e6/20)
+    #pistonWAV_pascal_dBAir= 20*np.log10(pistonRMS*1000/12.5*1e6/20)
     # sound pressure wave in refer to 20 microPascal
     
     print('pistonWAV_pascal_dBAir:', pistonWAV_pascal_dBAir)
     
-    # pistonWAV_pascal_dBwater = 20*np.log10(pistonRMS*1000/51.1*1e6)
+    pistonWAV_pascal_dBwater = 20*np.log10(pistonRMS*1000/51.1*1e6)
 
-    pistonWAV_pascal_dBwater = 20*np.log10(pistonRMS*1000/12.5*1e6)
+    #pistonWAV_pascal_dBwater = 20*np.log10(pistonRMS*1000/12.5*1e6)
     
     print('pistonWAV_pascal_dB water :', pistonWAV_pascal_dBwater)
     
@@ -184,12 +174,12 @@ if __name__=='__main__':
     
     print('max_p (v)=', max_p_sqrt)
     
-    # pistonWAV_pascal_dBAir = 20*np.log10(max_p_sqrt*1000/51.1*1e6/20)
-    # pistonWAV_pascal_dBwater = 20*np.log10(max_p_sqrt*1000/51.1*1e6)
+    pistonWAV_pascal_dBAir = 20*np.log10(max_p_sqrt*1000/51.1*1e6/20)
+    pistonWAV_pascal_dBwater = 20*np.log10(max_p_sqrt*1000/51.1*1e6)
 
 
-    pistonWAV_pascal_dBAir = 20*np.log10(max_p_sqrt*1000/12.5*1e6/20)
-    pistonWAV_pascal_dBwater = 20*np.log10(max_p_sqrt*1000/12.5*1e6)
+    #pistonWAV_pascal_dBAir = 20*np.log10(max_p_sqrt*1000/12.5*1e6/20)
+    #pistonWAV_pascal_dBwater = 20*np.log10(max_p_sqrt*1000/12.5*1e6)
     
     # Frequency Domain Calculation, should fairly close to time domain estimation. 
 
@@ -203,11 +193,12 @@ if __name__=='__main__':
     # plt.grid()
     # plt.show()
     # plt.close()
-    
+    wavStart = 88
+    wavStop = 100
     
     # exit(1)
-    wavSig = St600data[15*st600fs:27*st600fs]
-    sigt1   = t1[15*st600fs:27*st600fs]
+    wavSig = AMARdata[wavStart*AMARfs:wavStop*AMARfs]
+    sigt1   = t1[wavStart*AMARfs:wavStop*AMARfs]
     plt.figure()
     plt.plot(sigt1, wavSig)
     plt.show()
@@ -237,13 +228,13 @@ if __name__=='__main__':
     # nblock = 1024    
     overlap = nblock/4
     
-    nblock = st600fs
-    overlap = st600fs/2
+    nblock = AMARfs
+    overlap = AMARfs/2
     
 #    win = signal.blackman(nblock, True)
     win = signal.windows.blackman(nblock, True)
     
-    f, Pxxf = welch(wavSigNormMicroPa, st600fs, window=win, noverlap=overlap, nfft=nblock, return_onesided=True,scaling='spectrum')    
+    f, Pxxf = welch(wavSigNormMicroPa, AMARfs, window=win, noverlap=overlap, nfft=nblock, return_onesided=True,scaling='spectrum')    
 
     max_p = max(Pxxf)
     
@@ -252,8 +243,8 @@ if __name__=='__main__':
     
     print('max_p (v)=', max_p_sqrt)    
 
-    st600WAV_pascal_dBwater = 20*np.log10(max_p_sqrt)
-    print('AMAR WAV_pascal_dB water :', st600WAV_pascal_dBwater)
+    AMARWAV_pascal_dBwater = 20*np.log10(max_p_sqrt)
+    print('AMAR WAV_pascal_dB water :', AMARWAV_pascal_dBwater)
 
     
     plt.plot(f, Pxxf, '-o')
