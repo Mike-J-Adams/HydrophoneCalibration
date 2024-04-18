@@ -14,7 +14,7 @@ estimate the sensitivity
 import numpy as np 
 
 # import wave 
-from scipy.io import wavfile
+# from scipy.io import wavfile
 # samplerate, data = wavfile.read('./output/audio.wav')
 import soundfile as sf
 import matplotlib.pyplot as plt
