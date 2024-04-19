@@ -211,12 +211,23 @@ if __name__=='__main__':
     # exit(1)
     
     wavSigV = wavSig*9/2**24
-    
     plt.figure()
     plt.title('Piston Signal Extracted from AMAR Recording (V)')
     plt.plot(sigt1,wavSigV)
     plt.show()
+    plt.close()
+
+
+      
+    wavSigSPL = wavSigV/(5*(10**(-164/20)))
+    wavSigSPLdB = 20*np.log10(wavSigSPL)
+    
+    plt.figure()
+    plt.title('Piston Signal extracted from AMAR Recording')
+    plt.plot(sigt1, wavSigSPLdB)
+    plt.show()
     plt.close()    
+
     
     # wavSigNormMicroPa = wavSigNorm*10**(175.9/20)
 
@@ -251,20 +262,20 @@ if __name__=='__main__':
     hydrophoneSensitivity= 20*np.log10(max_p_sqrt1/10**(pistonWAV_pascal_dBwater/20))
     print('Estimated Hydrophone Sensitivity = ', hydrophoneSensitivity)
 
-    wavSigNormMicroPa = wavSigV*10**((hydrophoneSensitivity)/20)  # hydrophone Sensitivity used in the estimation. 
-    f2, Pxxf2 = welch(wavSigNormMicroPa, AMARfs, window=win, noverlap=overlap, nfft=nblock, return_onesided=True,scaling='spectrum')    
-    max_p2 = max(Pxxf2)
-    print('max_p2 (v^2)=', max_p2)
+    #wavSigNormMicroPa = wavSigV*10**((hydrophoneSensitivity)/20)  # hydrophone Sensitivity used in the estimation. 
+    #f2, Pxxf2 = welch(wavSigNormMicroPa, AMARfs, window=win, noverlap=overlap, nfft=nblock, return_onesided=True,scaling='spectrum')    
+    #max_p2 = max(Pxxf2)
+    #print('max_p2 (v^2)=', max_p2)
  
-    max_p_sqrt2 = np.sqrt(max_p2)
-    print('max_p2 (v)=', max_p_sqrt2)    
+    #max_p_sqrt2 = np.sqrt(max_p2)
+    #print('max_p2 (v)=', max_p_sqrt2)    
     
-    AMARWAV_pascal_dBwater = 20*np.log10(max_p_sqrt2)
-    print('AMAR WAV_pascal_dB water :', AMARWAV_pascal_dBwater)
+    #AMARWAV_pascal_dBwater = 20*np.log10(max_p_sqrt2)
+    #print('AMAR WAV_pascal_dB water :', AMARWAV_pascal_dBwater)
 
     plt.figure()
     plt.title('Spectrum of Piston Signal extracted from AMAR Recording')
-    plt.plot(f2, Pxxf2, '-o')
+    plt.plot(f1, Pxxf1, '-o')
     plt.xlim(230,300)
     plt.show()
     plt.close()
